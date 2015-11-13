@@ -1,0 +1,7 @@
+id=101|age=21|name=s1
+id=102|name=st2|age=22
+age=23|id=103|name=stu3
+age=24|name=stud4|id=104
+name=stude5|age=25|id=105
+name=studen6|id=106|age=26
+

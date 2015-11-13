@@ -1,0 +1,155 @@
+#include "string_class.h"
+
+string::string()
+{
+	m_pStr = NULL;
+}
+
+string::string(char *str)
+{
+	this->m_pStr = NULL;
+
+	if(!str || !strlen(str))
+	{
+		return;
+	}
+
+	int len = strlen(str);
+	m_pStr = new char[len+1];
+	m_pStr[len] = '\0';
+	memcpy(m_pStr, str, len);
+}
+
+string::string(const string &src)
+{
+	this->m_pStr = NULL;
+
+	if(!src.m_pStr)
+	{
+		return;
+	}
+
+	int len = strlen(src.m_pStr);
+	m_pStr = new char[len+1];
+	m_pStr[len] = '\0';
+	memcpy(m_pStr, src.m_pStr, len);
+}
+
+string::~string()
+{
+	if(m_pStr)
+	{
+		delete []m_pStr;
+	}
+}
+
+const string& string::operator=(char *str)
+{
+	if(!str || !strlen(str))
+	{
+		return *this;
+	}
+
+	if(m_pStr)
+	{
+		delete []m_pStr;
+		m_pStr = NULL;
+	}
+
+	int len = strlen(str);
+	m_pStr = new char[len+1];
+	m_pStr[len] = '\0';
+	memcpy(m_pStr, str, len);
+
+	return *this;
+}
+
+const string& string::operator=(const string &src)
+{
+	if(m_pStr)
+	{
+		delete []m_pStr;
+		m_pStr = NULL;
+	}
+
+	if(!src.m_pStr)
+	{
+		return *this;
+	}
+
+	int len = strlen(src.m_pStr);
+	m_pStr = new char[len+1];
+	m_pStr[len] = '\0';
+	memcpy(m_pStr, src.m_pStr, len);
+
+	return *this;
+}
+
+const string& string::operator+=(char *str)
+{
+	if(!str || !strlen(str))
+	{
+		return *this;
+	}
+
+	int tmplen = strlen(str);
+	if(this->m_pStr != NULL)
+	{
+		int len = strlen(this->m_pStr);
+
+		char *tmpstr = new char[len+tmplen+1];
+		tmpstr[len+tmplen] = '\0';
+		memcpy(tmpstr, this->m_pStr, len);
+		memcpy(tmpstr+len, str, tmplen);
+
+		delete []m_pStr;
+		this->m_pStr = tmpstr;
+	}
+	else
+	{
+		m_pStr = new char[tmplen+1];
+		m_pStr[tmplen] = '\0';
+		memcpy(m_pStr, str, tmplen);
+	}
+
+	return *this;
+}
+
+const string& string::operator+=(const string &src)
+{
+	if(!src.m_pStr)
+	{
+		return *this;
+	}
+
+	int tmplen = strlen(src.m_pStr);
+	if(this->m_pStr != NULL)
+	{
+		int len = strlen(this->m_pStr);
+
+		char *tmpstr = new char[len+tmplen+1];
+		tmpstr[len+tmplen] = '\0';
+		memcpy(tmpstr, this->m_pStr, len);
+		memcpy(tmpstr+len, src.m_pStr, tmplen);
+
+		delete []m_pStr;
+		this->m_pStr = tmpstr;
+	}
+	else
+	{
+		m_pStr = new char[tmplen+1];
+		m_pStr[tmplen] = '\0';
+		memcpy(m_pStr, src.m_pStr, tmplen);
+	}
+
+	return *this;
+}
+
+void string::clear()
+{
+	if(m_pStr)
+	{
+		delete []m_pStr;
+		m_pStr = NULL;
+	}
+}
