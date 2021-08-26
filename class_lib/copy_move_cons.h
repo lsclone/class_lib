@@ -18,6 +18,8 @@ namespace tcm {
             data = another.data;
         }
         Item& operator=(const Item& another) {
+            if (this == &another)
+                return *this;
             data = another.data;
             return *this;
         }
@@ -26,6 +28,8 @@ namespace tcm {
             std::swap(data, another.data);
         }
         Item& operator=(Item&& another) noexcept {
+            if (this == &another)
+                return *this;
             std::swap(data, another.data);
             return *this;
         }
@@ -40,16 +44,28 @@ namespace tcm {
         ~Abstract() = default;
 
         //Abstract(const Abstract&) = default;
+        //Abstract& operator=(const Abstract&) = default;
         Abstract(const Abstract& another) {
             data = another.data;
         }
-        Abstract& operator=(const Abstract&) = default;
+        Abstract& operator=(const Abstract& another) {
+            if (this == &another)
+                return *this;
+            data = another.data;
+            return *this;
+        }
 
         //Abstract(Abstract&&) = default;
-        Abstract(Abstract&& another) {
+        //Abstract& operator=(Abstract&&) = default;
+        Abstract(Abstract&& another) noexcept {
             std::swap(data, another.data);
         }
-        Abstract& operator=(Abstract&&) = default;
+        Abstract& operator=(Abstract&& another) noexcept {
+            if (this == &another)
+                return *this;
+            std::swap(data, another.data);
+            return *this;
+        }
 
     private:
         int data = 0;
@@ -62,21 +78,37 @@ namespace tcm {
 
         explicit Base(int da, Item<double>&& im_double);
 
-        // Base(const Base&) = default;
+        //Base(const Base&) = default;
+        //Base& operator=(const Base&) = default;
         Base(const Base& another) 
             : Abstract(another),
             data(another.data),
             im_d(another.im_d) {
         }
-        Base& operator=(const Base&) = default;
+        Base& operator=(const Base& another) {
+            if (this == &another)
+                return *this;
+            Abstract::operator=(another);
+            data = another.data;
+            im_d = another.im_d;
+            return *this;
+        }
 
         //Base(Base&&) = default;
-        Base(Base&& another)
+        //Base& operator=(Base&&) = default;
+        Base(Base&& another) noexcept
             : Abstract(std::move(another)),
             data(another.data),
             im_d(std::move(another.im_d)) {
         }
-        Base& operator=(Base&&) = default;
+        Base& operator=(Base&& another) noexcept {
+            if (this == &another)
+                return *this;
+            Abstract::operator=(std::move(another));
+            std::swap(data, another.data);
+            im_d = std::move(another.im_d);
+            return *this;
+        }
 
     private:
         int data;
@@ -122,9 +154,31 @@ void main() {
     {
         tcm::Extend ex(10, tcm::Item<double>(2.0),
             "hello234", tcm::Item<int>(20));
+        tcm::Extend ex2(12, tcm::Item<double>(2.2),
+            "world", tcm::Item<int>(22));
+
+        //ex2 = ex;
+        ex2 = std::move(ex);
+    }
+
+    ///////////////////////////////////////////
+    {
+        tcm::Extend ex(10, tcm::Item<double>(2.0),
+            "hello234", tcm::Item<int>(20));
+
+        //tcm::Extend&& ex_ref = std::move(ex);
+        //tcm::Base&& ba_ref = std::move(ex_ref);
+        tcm::Base&& ba_ref = std::move(ex);
+
+        tcm::Base ba = std::move(ba_ref);
+    }
+
+    ///////////////////////////////////////////
+    {
+        tcm::Extend ex(10, tcm::Item<double>(2.0),
+            "hello234", tcm::Item<int>(20));
 
         tcm::Extend& ex_ref = ex;
-
         tcm::Base& ba_ref = ex_ref;
 
         tcm::Base ba = ba_ref;
