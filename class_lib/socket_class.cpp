@@ -2,16 +2,13 @@
 
 
 /*
-**	MTU(Maximum Transmission Unit): 1500 bytes
-**	mss(maximum segment size): tcp(1448 bytes), udp(1460 bytes)
-**	tcp: 1500-20(ip header length)-32(tcp header length) = 1448
-**	udp: 1500-20(ip header length)-20(udp header length) = 1460
+**	IP MTU(Maximum Transmission Unit): 1500 bytes
+**	TCP MSS(Maximum Segment Size): 1460 bytes.
+**	tcp: 1500-20(ip header length)-20(tcp header length) = 1460
 **
-**	tcp·¢°üÓÐ»úÖÆ, Èç¹ûdata length > 1448, »á×Ô¶¯²ð·Ö;
-**	Èç¹ûdata length < 1448, »áµÈ´ýÒ»¶¨Ê±¼ä, Èç¹ûÓÐÐÂÔödata, »á×é³É1448×Ö½Ú·¢ËÍ, ³¬Ê±ÔòÖ±½Ó·¢ËÍµ±Ç°×Ö½ÚÊý¾Ý¡£
-**	ÓÉÓÚMTUÖµ¿ÉÒÔÐÞ¸Ä£¬¹Êmss²»¹Ì¶¨Îª1448×Ö½Ú£¬ËùÒÔBUFF_SIZEÉèÖÃÎª1024¡£
-**
-**	Èç¹ûÔÚ¾ÖÓòÍøÄÚ£¬ÓÉÓÚÂ·ÓÉÆ÷ºÍÖ÷»úµÄMTU½Ô¿ÉÅäÖÃ£¬¹Ê½¨ÒéÍ³Ò»ÊýÖµ(ÀýÈç1500)£¬´ËÊ±£¬BUFF_SIZEÉèÖÃÎª1448¡£
+**	tcpå‘åŒ…æœ‰æœºåˆ¶, å¦‚æžœdata length > 1460, ä¼šè‡ªåŠ¨æ‹†åˆ†;
+**	å¦‚æžœdata length < 1460, ä¼šç­‰å¾…ä¸€å®šæ—¶é—´, å¦‚æžœæœ‰æ–°å¢ždata, ä¼šç»„æˆ1460å­—èŠ‚å‘é€, è¶…æ—¶åˆ™ç›´æŽ¥å‘é€å½“å‰å­—èŠ‚æ•°æ®ã€‚
+**	ç”±äºŽMTUå€¼å¯ä»¥ä¿®æ”¹ï¼Œæ•…MSSSä¸å›ºå®šä¸º1460å­—èŠ‚ã€‚
 */
 #define BUFF_SIZE 1024
 //#define BUFF_SIZE (1024*64)
@@ -303,7 +300,7 @@ int Socket::Recv(string &strMsgBuf, int nMsgLen, int timeout)
 	return 0;
 }
 
-// char* const strMsg; Ö¸ÏòcharµÄconstÖ¸Õë
+// char* const strMsg; æŒ‡å‘charçš„constæŒ‡é’ˆ
 int Socket::Send(const char *strMsg, int timeout)
 {
 	if (m_sockfd == -1)
